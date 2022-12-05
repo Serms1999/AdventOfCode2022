@@ -43,8 +43,7 @@ Find the Elf carrying the most Calories. **How many total Calories is that Elf c
 
 <details>
     <summary>Solution</summary>
-            
-    Text
+    Solution. asdasdasdkaslñdkasd.
 
     ```python
     print('Hello')
