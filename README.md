@@ -18,7 +18,7 @@ puzzle is unlocked when you complete the first. Each puzzle grants **one star**.
 
 | Day | Part 1                  | Part 2                  | My Solution    | Official Website                               | 
 |-----|-------------------------|-------------------------|----------------|------------------------------------------------|
-| 01  | :ballot_box_with_check: | :ballot_box_with_check: | [Day 1](Day1/) | [Day 01](https://adventofcode.com/2022/day/1)  |
+| 01  | :white_check_mark:      | :ballot_box_with_check: | [Day 1](Day1/) | [Day 01](https://adventofcode.com/2022/day/1)  |
 | 02  | :ballot_box_with_check: | :ballot_box_with_check: |                | [Day 02](https://adventofcode.com/2022/day/2)  |
 | 03  | :ballot_box_with_check: | :ballot_box_with_check: |                | [Day 03](https://adventofcode.com/2022/day/3)  |
 | 04  | :ballot_box_with_check: | :ballot_box_with_check: |                | [Day 04](https://adventofcode.com/2022/day/4)  |

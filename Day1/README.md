@@ -43,9 +43,23 @@ Find the Elf carrying the most Calories. **How many total Calories is that Elf c
 
 <details>
     <summary>Solution</summary>
-    Solution. asdasdasdkaslñdkasd.
+    
+This is a simple problem. It's only necessary to sum every consecutive element and save the maximum.of them.
 
-    ```python
-    print('Hello')
-    ```
+```python
+def get_max_elf(input_lines: list) -> int:
+    max_sum = 0
+    current_sum = 0
+    for cal in input_lines:
+        if cal != '':
+            current_sum += int(cal)
+        else:
+            if current_sum > max_sum:
+                max_sum = current_sum
+            current_sum = 0
+
+    return max_sum
+```
+
+The answer is `68442`.
 </details>
