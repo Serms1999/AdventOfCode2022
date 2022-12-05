@@ -40,3 +40,11 @@ Calories are being carried by the Elf carrying the **most** Calories. In the exa
 (carried by the fourth Elf).
 
 Find the Elf carrying the most Calories. **How many total Calories is that Elf carrying?**
+
+<details>
+    <summary>Solution</summary>
+    
+    ```python
+    print('Hello')
+    ```
+</details>
