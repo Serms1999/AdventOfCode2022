@@ -1,4 +1,4 @@
-# --- Day 1: Calorie Counting ---
+# Day 1: Calorie Counting
 
 ## Part 1
 
@@ -44,7 +44,7 @@ Find the Elf carrying the most Calories. **How many total Calories is that Elf c
 <details>
     <summary>Solution</summary>
     
-This is a simple problem. It's only necessary to sum every consecutive element and save the maximum.of them.
+This is a simple problem. It's only necessary to sum every consecutive element and save the maximum.
 
 ```python
 def get_max_elf(input_lines: list) -> int:
@@ -57,9 +57,61 @@ def get_max_elf(input_lines: list) -> int:
             if current_sum > max_sum:
                 max_sum = current_sum
             current_sum = 0
+            
+    # Last element
+    if current_sum > max_sum:
+        max_sum = current_sum
 
     return max_sum
 ```
 
 The answer is `68442`.
+</details>
+
+## Part 2
+
+By the time you calculate the answer to the Elves' question, they've already realized that the Elf carrying the most
+Calories of food might eventually **run out of snacks**.
+
+To avoid this unacceptable situation, the Elves would instead like to know the total Calories carried by the 
+**top three** Elves carrying the most Calories. That way, even if one of those Elves runs out of snacks, they still 
+have two backups.
+
+In the example above, the top three Elves are the fourth Elf (with `24000` Calories), then the third Elf (with `11000`
+Calories), then the fifth Elf (with `10000` Calories). The sum of the Calories carried by these three elves is 
+**`45000`**.
+
+Find the top three Elves carrying the most Calories. **How many Calories are those Elves carrying in total?**
+
+<details>
+    <summary>Solution</summary>
+    
+Instead of saving only the biggest one, we have to track the top three using a list and updating the minimum of its
+elements.
+
+```python
+def get_three_top_elves(input_lines: list) -> int:
+    biggest_sums = []
+    current_sum = 0
+    for cal in input_lines:
+        if cal != '':
+            current_sum += int(cal)
+        else:
+            if len(biggest_sums) < 3:
+                biggest_sums.append(current_sum)
+            elif current_sum > biggest_sums[0]:
+                biggest_sums[0] = current_sum
+            biggest_sums.sort()
+            current_sum = 0
+
+    # Last element
+    if len(biggest_sums) < 3:
+        biggest_sums.append(current_sum)
+    elif current_sum > biggest_sums[0]:
+        biggest_sums[0] = current_sum
+
+    return sum(biggest_sums)
+```
+
+The answer is `204837`.
 </details>
