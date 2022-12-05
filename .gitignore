@@ -1,0 +1,6 @@
+# Ignore editor config
+.idea/
+.vscode/
+
+# Ignore python compile files
+*__pycache__
