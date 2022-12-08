@@ -107,7 +107,7 @@ according to your strategy guide?**
 <details>
     <summary>Solution</summary>
 
-Firstly, I defined an inverse function to the game using a kind cycled buffer of the possible choices.
+Firstly, I defined an inverse function to the game using a kind of cycled buffer with the possible choices.
 ```python
 def rock_paper_scissors_inverse(expectation: str, opponent_choice: str) -> str:
     options = {'defeat': -1, 'draw': 0, 'win': 1}
@@ -116,7 +116,7 @@ def rock_paper_scissors_inverse(expectation: str, opponent_choice: str) -> str:
     return chr(own_choice_normalized + ord('X'))
 ```
 
-With that functions, it only remains to make minor changes to my strategy guide function.
+With that function, it only remains to make minor changes to my strategy guide function.
 ```python
 def strategy_guide(input_lines: list) -> int:
     games = [e.split() for e in input_lines]
