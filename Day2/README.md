@@ -1,5 +1,7 @@
 # Day 2: Rock Paper Scissors
 
+## Part 1
+
 The Elves begin to set up camp on the beach. To decide whose tent gets to be closest to the snack storage, a giant
 [Rock Paper Scissors](https://en.wikipedia.org/wiki/Rock_paper_scissors) tournament is already in progress.
 
@@ -48,7 +50,7 @@ In this example, if you were to follow the strategy guide, you would get a total
 First of all, it is necessary to model mathematically the game:
 
 ```python
-def rock_paper_scissors(own_choice: str, opponent_choice) -> str:
+def rock_paper_scissors(own_choice: str, opponent_choice: str) -> str:
     if own_choice == opponent_choice:
         return 'draw'
     res = (ord(own_choice) - ord(opponent_choice)) % 3
@@ -81,4 +83,57 @@ def strategy_guide(input_lines: list) -> int:
 ```
 
 The answer is: `13675`.
+</details>
+
+## Part 2
+
+The Elf finishes helping with the tent and sneaks back over to you. "Anyway, the second column says how the round needs
+to end: `X` means you need to lose, `Y` means you need to end the round in a draw, and `Z` means you need to win. Good
+luck!"
+
+The total score is still calculated in the same way, but now you need to figure out what shape to choose so the round
+ends as indicated. The example above now goes like this:
+- In the first round, your opponent will choose Rock (`A`), and you need the round to end in a draw (`Y`), so you also
+choose Rock. This gives you a score of 1 + 3 = **4**.
+- In the second round, your opponent will choose Paper (`B`), and you choose Rock so you lose (`X`) with a score of
+1 + 0 = **1**.
+- In the third round, you will defeat your opponent's Scissors with Rock for a score of 1 + 6 = **7**.
+
+Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of **`12`**.
+
+Following the Elf's instructions for the second column, **what would your total score be if everything goes exactly
+according to your strategy guide?**
+
+<details>
+    <summary>Solution</summary>
+
+Firstly, I defined an inverse function to the game using a kind cycled buffer of the possible choices.
+```python
+def rock_paper_scissors_inverse(expectation: str, opponent_choice: str) -> str:
+    options = {'defeat': -1, 'draw': 0, 'win': 1}
+    opponent_choice_normalized = ord(opponent_choice) - ord('A')
+    own_choice_normalized = (opponent_choice_normalized + options[expectation]) % 3
+    return chr(own_choice_normalized + ord('X'))
+```
+
+With that functions, it only remains to make minor changes to my strategy guide function.
+```python
+def strategy_guide(input_lines: list) -> int:
+    games = [e.split() for e in input_lines]
+
+    map_own_choice = {'X': 'defeat', 'Y': 'draw', 'Z': 'win'}
+    map_choice = {'X': 1, 'Y': 2, 'Z': 3}
+    map_result = {'win': 6, 'draw': 3, 'defeat': 0}
+
+    total_points = 0
+    for opponent_choice, own_choice in games:
+        own_choice_mapped = map_own_choice[own_choice]
+        res = rock_paper_scissors_inverse(own_choice_mapped, opponent_choice)
+        points = map_choice[res] + map_result[own_choice_mapped]
+        total_points += points
+
+    return total_points
+```
+
+The answer is: `14184`.
 </details>
