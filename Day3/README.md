@@ -56,9 +56,9 @@ First of all, we have to split the rucksack into its compartments. We can use se
 objects, not objects.
 
 ```python
-def get_compartments(input_lines: list) -> list:
+def get_compartments(rucksacks: list) -> list:
     compartments = []
-    for line in input_lines:
+    for line in rucksacks:
         half_length = len(line) // 2
         half1, half2 = line[:half_length], line[half_length:]
         compartments.append((set(half1), set(half2)))
@@ -73,7 +73,7 @@ using set intersection.
 def get_repeated_items(compartments: list) -> list:
     repeated_items = []
     for half1, half2 in compartments:
-        common_item = half1.intersection(half2).pop()
+        common_item = (half1 & half2).pop()
         repeated_items.append(common_item)
 
     return repeated_items
@@ -94,3 +94,80 @@ def calculate_priority(item: str) -> int:
 
 The answer is: `7821`.
 </details>
+
+## Part 2
+
+As you finish identifying the misplaced items, the Elves come to you with another issue.
+
+For safety, the Elves are divided into groups of three. Every Elf carries a badge that identifies their group. For
+efficiency, within each group of three Elves, the badge is the **only item type carried by all three Elves**. That is,
+if a group's badge is item type `B`, then all three Elves will have item type `B` somewhere in their rucksack, and at 
+most two of the Elves will be carrying any other item type.
+
+The problem is that someone forgot to put this year's updated authenticity sticker on the badges. All of the badges
+need to be pulled out of the rucksacks so the new authenticity stickers can be attached.
+
+Additionally, nobody wrote down which item type corresponds to each group's badges. The only way to tell which item
+type is the right one is by finding the one item type that is **common between all three Elves** in each group.
+
+Every set of three lines in your list corresponds to a single group, but each group can have a different badge item
+type. So, in the above example, the first group's rucksacks are the first three lines:
+
+```
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+```
+
+And the second group's rucksacks are the next three lines:
+
+```
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+```
+
+In the first group, the only item type that appears in all three rucksacks is lowercase `r`; this must be their badges. 
+In the second group, their badge item type must be `Z`.
+
+Priorities for these items must still be found to organize the sticker attachment efforts: here, they are 18 (`r`) for
+the first group and 52 (`Z`) for the second group. The sum of these is **`70`**.
+
+Find the item type that corresponds to the badges of each three-Elf group. **What is the sum of the priorities of those
+item types?**
+
+<details>
+    <summary>Solution</summary>
+
+
+Now we only have to group the elves in threes.
+
+```python
+def group_elves(elves_list: list) -> list:
+    elves_grouped = []
+    for index, elf in enumerate(elves_list):
+        if index % 3 == 0:
+            elves_grouped.append([])
+        elves_grouped[index // 3].append(set(elf))
+
+    return elves_grouped
+```
+
+Lastly, it only remains to find the common item in each group, we can use set intersection too.
+
+```python
+def get_repeated_items_by_group(groups: list) -> list:
+    repeated_items = []
+    for group in groups:
+        common_item = set.intersection(*group).pop()
+        repeated_items.append(common_item)
+
+    return repeated_items
+```
+
+What remains is to calculate the priority as before.
+
+The answer is: `2752`.
+
+</details>
+
