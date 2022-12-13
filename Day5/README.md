@@ -127,12 +127,12 @@ Lastly, we need to get the top element from each stack.
 
 ```python
 top_crates = ''
-    for stack in stacks:
-        try:
-            top_crates += stack.pop()
-        except IndexError:
-            # Empty stack
-            pass
+for stack in stacks:
+    try:
+        top_crates += stack.pop()
+    except IndexError:
+        # Empty stack
+        pass
 ```
 
 The answer is: `LBLVVTVLP`.
