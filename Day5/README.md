@@ -83,5 +83,56 @@ The Elves just need to know **which crate will end up on top of each stack**; in
 <details>
     <summary>Solution</summary>
 
+First of all, it is necessary to parse the input. The stacks will be parsed as a list of heaps. On the other hand, the moves will be parsed as tuples such as (_from_, _to_, _num_). To achieve this result, I used regular expressions.
+
+The parse function is the following:
+
+```python
+def parse_lines(procedure: list) -> (list, list):
+    index = procedure.index('')
+    stack_lines, moves_lines = procedure[:index], procedure[index+1:]
+    num_stack = max([int(x) for x in re.findall(r'([0-9]+)', stack_lines.pop())])
+    stack_lines.reverse()
+
+    stacks = [[] for _ in range(num_stack)]
+    for line in stack_lines:
+        crates = re.findall(pattern=r'(\[[A-Z]\]|\s\s\s)\s?', string=line)
+        for index, crate in enumerate(crates):
+            if crate != '   ':
+                stacks[index].append(crate[1])
+
+    moves = []
+    pat = re.compile(pattern=r'move ([0-9]+) from ([0-9]+) to ([0-9]+)')
+    for move in moves_lines:
+        mat = re.match(pattern=pat, string=move)
+        moves.append({'num': int(mat.group(1)), 'from': int(mat.group(2)) - 1, 'to': int(mat.group(3)) - 1})
+
+    return stacks, moves
+```
+
+Once we have this representation, it is so simple to move elements from one stack to another.
+
+```python
+def move_crate(stack_from: list, stack_to: list, num_elem: int) -> None:
+    for _ in range(num_elem):
+        elem = stack_from.pop()
+        stack_to.append(elem)
+
+        
+for move in moves:
+    move_crate(stacks[move['from']], stacks[move['to']], move['num'])
+```
+
+Lastly, we need to get the top element from each stack.
+
+```python
+top_crates = ''
+    for stack in stacks:
+        try:
+            top_crates += stack.pop()
+        except IndexError:
+            # Empty stack
+            pass
+```
 
 </details>
