@@ -25,9 +25,11 @@ def parse_lines(procedure: list) -> (list, list):
 
 
 def move_crate(stack_from: list, stack_to: list, num_elem: int) -> None:
+    crate_list = []
     for _ in range(num_elem):
-        elem = stack_from.pop()
-        stack_to.append(elem)
+        crate_list.append(stack_from.pop())
+    crate_list.reverse()
+    stack_to.extend(crate_list)
 
 
 def main():
