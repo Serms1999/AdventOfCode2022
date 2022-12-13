@@ -11,7 +11,7 @@ def check_contained(line: str) -> int:
     elf2 = [e in range(b1, b2 + 1) for e in range(1, 100 + 1)]
     and_array = [e1 and e2 for e1, e2 in zip(elf1, elf2)]
 
-    return and_array == elf1 or and_array == elf2
+    return any(and_array)
 
 
 def main():

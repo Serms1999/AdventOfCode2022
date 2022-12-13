@@ -59,7 +59,9 @@ Some of the pairs have noticed that one of their assignments **fully contains** 
 <details>
     <summary>Solution</summary>
 
-This one is a simple problem. We only need to use two boolean arrays and make a AND operation between them. If one of the arrays is equal to that calculated array, it means there is a contained array.
+This one is a simple problem. We will use regular expressions.
+
+We only need to use two boolean arrays and make a AND operation between them. If one of the arrays is equal to that calculated array, it means there is a contained array.
 ```python
 def check_contained(line: str) -> int:
     line_RE = r'([0-9]+)-([0-9]+),([0-9]+)-([0-9]+)'
@@ -74,5 +76,38 @@ def check_contained(line: str) -> int:
 ```
 
 This function will return 1 if one array is fully contained inside the other. Summing up all of them, we have the answer.
+
 The answer is: `580`.
 </details>
+
+## --- Part Two ---
+
+It seems like there is still quite a bit of duplicate work planned. Instead, the Elves would like to know the number of pairs that **overlap at all**.
+
+
+In the above example, the first two pairs (`2-4,6-8` and `2-3,4-5`) don't overlap, while the remaining four pairs (`5-7,7-9`, `2-8,3-7`, `6-6,4-6`, and `2-6,4-8`) do overlap:
+
+
+- `5-7,7-9` overlaps in a single section, `7`.
+- `2-8,3-7` overlaps all of the sections `3` through `7`.
+- `6-6,4-6` overlaps in a single section, `6`.
+- `2-6,4-8` overlaps in sections `4`, `5`, and `6`.
+
+
+So, in this example, the number of overlapping assignment pairs is **`4`**.
+
+
+**In how many assignment pairs do the ranges overlap?**
+
+<details>
+    <summary>Solution</summary>
+
+Taking into account our previous approach, we only need to change one line, the return statement. Now we need to know if one id is contained in both arrays.
+
+```python
+return any(and_array)
+```
+
+The answer is: `895`.
+</details>
+
