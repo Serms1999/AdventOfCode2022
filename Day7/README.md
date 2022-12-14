@@ -101,4 +101,66 @@ To begin, find all of the directories with a total size of **at most 100000**, t
 
 Find all of the directories with a total size of at most 100000. **What is the sum of the total sizes of those directories?**
 
+<details>
+	<summary>Solution</summary>
 
+
+First of all, it is necessary to parse the file system. I will use dictionaries to represent directories. To go back to the parent directory, I use a heap of directories taking advantage of the fact that I can use reference values.
+
+```python
+def parse_file_system(commands: list) -> dict:
+    root = {}
+    current_dir = {}
+    parent_dirs = []
+    pat_cd = re.compile(pattern=r'\$ cd (.*)')
+    pat_dir = re.compile(pattern=r'dir (.*)')
+    pat_file = re.compile(pattern=r'([0-9]+) (.*)')
+    for cmd in commands:
+        if mat := pat_cd.match(cmd):
+            if not current_dir:
+                # '$ cd /'
+                root = current_dir
+                continue
+            elif (dir_name := mat.group(1)) == '..':
+                current_dir = parent_dirs.pop()
+            else:
+                parent_dirs.append(current_dir)
+                current_dir = current_dir[dir_name]
+        elif mat := pat_dir.match(cmd):
+            current_dir[mat.group(1)] = {}
+        elif mat := pat_file.match(cmd):
+            current_dir[mat.group(2)] = int(mat.group(1))
+
+    return root
+```
+
+I use recursion to calculate the size of all directories.
+
+```python
+def get_dir_size(root: dict, dirs: list) -> int:
+    value = 0
+    for name, item in root.items():
+        if type(item) == int:
+            value += item
+        else:
+            dir_value = get_dir_size(item, dirs)
+            dirs.append(dir_value)
+            value += dir_value
+
+    return value
+```
+
+I collect all sizes in `dirs` and I use this list to filter by size.
+
+Lastly, I only have to sum all of them.
+
+```python
+dir_size = []
+    get_dir_size(root, dir_size)
+    big_dirs = list(filter(lambda d: d <= 100_000, dir_size))
+    print(f'{sum(big_dirs)=}')
+```
+
+The answer is: `1453349`.
+
+</details>
