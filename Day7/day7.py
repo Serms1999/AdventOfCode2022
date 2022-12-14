@@ -46,9 +46,11 @@ def main():
     root = parse_file_system(input_lines)
 
     dir_size = []
-    get_dir_size(root, dir_size)
-    big_dirs = list(filter(lambda d: d <= 100_000, dir_size))
-    print(f'{sum(big_dirs)=}')
+    used_space = get_dir_size(root, dir_size)
+    unused_space = 70_000_000 - used_space
+
+    big_enough_dirs = list(filter(lambda s: unused_space + s >= 30_000_000, dir_size))
+    print(f'{sorted(big_enough_dirs)[0]=}')
 
 
 if __name__ == '__main__':
