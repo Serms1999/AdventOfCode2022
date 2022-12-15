@@ -156,9 +156,9 @@ Lastly, I only have to sum all of them.
 
 ```python
 dir_size = []
-    get_dir_size(root, dir_size)
-    big_dirs = list(filter(lambda d: d <= 100_000, dir_size))
-    print(f'{sum(big_dirs)=}')
+get_dir_size(root, dir_size)
+big_dirs = list(filter(lambda d: d <= 100_000, dir_size))
+print(f'{sum(big_dirs)=}')
 ```
 
 The answer is: `1453349`.
