@@ -33,7 +33,7 @@ def move_crate(stack_from: list, stack_to: list, num_elem: int) -> None:
 
 
 def main():
-    input_lines = read_input_lines(root_file=__file__)
+    input_lines = read_input_lines()
     stacks, moves = parse_lines(input_lines)
 
     for move in moves:

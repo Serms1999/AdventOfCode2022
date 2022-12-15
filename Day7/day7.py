@@ -42,7 +42,7 @@ def get_dir_size(root: dict, dirs: list) -> int:
 
 
 def main():
-    input_lines = read_input_lines(root_file=__file__)
+    input_lines = read_input_lines()
     root = parse_file_system(input_lines)
 
     dir_size = []

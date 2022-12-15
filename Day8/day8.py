@@ -63,7 +63,7 @@ def get_scenic_score(x: int, y: int, grid: np.ndarray) -> int:
 
 
 def main():
-    input_lines = read_input_lines(root_file=__file__)
+    input_lines = read_input_lines()
     grid = parse_forest(input_lines)
     num_rows, num_cols = np.shape(grid)
 

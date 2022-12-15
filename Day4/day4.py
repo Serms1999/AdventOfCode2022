@@ -15,7 +15,7 @@ def check_contained(line: str) -> int:
 
 
 def main():
-    input_lines = read_input_lines(root_file=__file__)
+    input_lines = read_input_lines()
     print(sum([check_contained(line) for line in input_lines]))
 
 

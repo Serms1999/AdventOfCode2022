@@ -35,7 +35,7 @@ def strategy_guide(input_lines: list) -> int:
 
 
 def main():
-    input_lines = read_input_lines(root_file=__file__)
+    input_lines = read_input_lines()
     print(f'Expected points: {strategy_guide(input_lines)}')
 
 

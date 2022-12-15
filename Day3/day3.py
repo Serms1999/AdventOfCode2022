@@ -46,7 +46,7 @@ def calculate_priority(item: str) -> int:
 
 
 def main():
-    input_lines = read_input_lines(root_file=__file__)
+    input_lines = read_input_lines()
     groups = group_elves(input_lines)
     repeated_items = get_repeated_items_by_group(groups)
     sum_priority = sum(map(lambda i: calculate_priority(i), repeated_items))

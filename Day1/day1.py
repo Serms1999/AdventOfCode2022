@@ -43,7 +43,7 @@ def get_three_top_elves(input_lines: list) -> int:
 
 
 def main():
-    input_lines = read_input_lines(root_file=__file__)
+    input_lines = read_input_lines()
     print(get_three_top_elves(input_lines))
 
 
