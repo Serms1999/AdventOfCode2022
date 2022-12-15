@@ -34,17 +34,45 @@ def check_tree_visibility(x: int, y: int, grid: np.ndarray) -> bool:
     return False
 
 
+def get_scenic_score(x: int, y: int, grid: np.ndarray) -> int:
+    num_rows, num_cols = np.shape(grid)
+
+    def get_view(trees: np.ndarray) -> int:
+        score = 0
+        for tree in trees:
+            if tree >= value:
+                score += 1
+                break
+            score += 1
+        return score
+
+    value = grid[x][y]
+    grid_transpose = np.transpose(grid)
+    current_row = grid[x]
+    current_col = grid_transpose[y]
+
+    left_trees, right_trees = np.flip(current_row[0:y]), current_row[y+1:num_cols]
+    up_trees, down_trees = np.flip(current_col[0:x]), current_col[x+1:num_rows]
+
+    left = get_view(left_trees)
+    up = get_view(up_trees)
+    right = get_view(right_trees)
+    down = get_view(down_trees)
+
+    return left * up * right * down
+
+
 def main():
     input_lines = read_input_lines(root_file=__file__)
     grid = parse_forest(input_lines)
     num_rows, num_cols = np.shape(grid)
 
-    visible_trees = 2*num_rows + 2*(num_cols - 2)
-    for i in range(1, num_rows - 1):
-        for j in range(1, num_cols - 1):
-            visible_trees += check_tree_visibility(i, j, grid)
+    scenic_scores = np.zeros(np.shape(grid), dtype=int)
+    for i in range(num_rows):
+        for j in range(num_cols):
+            scenic_scores[i][j] = get_scenic_score(i, j, grid)
 
-    print(f'{visible_trees=}')
+    print(f'{np.amax(np.amax(scenic_scores))=}')
 
 
 if __name__ == '__main__':
