@@ -282,7 +282,11 @@ Simulate your complete hypothetical series of motions. **How many positions does
     <summary>Solution</summary>
 
 Here, we have to check if the head is too far away from the tail. In this case, we calculate the distance among them but removing one move in the current direction (the tail is always behind the head).
-To check if the distance is big enough I use Chebyshev distance: $$ D_{\text{Chebyshev}} = \max\left\{ \lvert x_1 - y_1 \rvert, \lvert x_2 - y_2 \rvert \right\}$$
+To check if the distance is big enough I use Chebyshev distance: 
+
+```math
+D_{\text{Chebyshev}} = \max\left\{ \lvert x_1 - y_1 \rvert, \lvert x_2 - y_2 \rvert \right\}
+```
 
 ```python
 tail, head = np.array([0, 0]), np.array([0, 0])
