@@ -10,12 +10,12 @@ def check_far_away(knot1: np.ndarray, knot2: np.ndarray) -> np.ndarray:
 
 
 def limit_move(move: np.ndarray) -> np.ndarray:
-    signs = move // abs(move)
-    return np.array([signs[0]*min(move[0], 1), signs[1]*min(move[1], 1)])
+    signs = np.sign(move)
+    return np.array([signs[0]*min(abs(move[0]), 1), signs[1]*min(abs(move[1]), 1)])
 
 
 def main():
-    input_lines = read_input_lines(file_name='test_input')
+    input_lines = read_input_lines()
     rope = [np.zeros(2, dtype=int), np.zeros(2, dtype=int),
             np.zeros(2, dtype=int), np.zeros(2, dtype=int),
             np.zeros(2, dtype=int), np.zeros(2, dtype=int),

@@ -766,4 +766,44 @@ Now, the tail (`9`) visits **`36`** positions (including `s`) at least once:
 
 Simulate your complete series of motions on a larger rope with ten knots. **How many positions does the tail of the rope visit at least once?**
 
+<details>
+    <summary>Solution</summary>
 
+The previous assumption was wrong. Now I know that I only have to limit the movement to one of the eight squares next to the current one.
+To represent all the rope I use an array with all the knots.
+
+```python
+rope = [np.zeros(2, dtype=int), np.zeros(2, dtype=int),
+            np.zeros(2, dtype=int), np.zeros(2, dtype=int),
+            np.zeros(2, dtype=int), np.zeros(2, dtype=int),
+            np.zeros(2, dtype=int), np.zeros(2, dtype=int),
+            np.zeros(2, dtype=int), np.zeros(2, dtype=int)]
+moves = {'L': np.array([0, -1]), 'U': np.array([1, 0]),
+         'R': np.array([0, 1]), 'D': np.array([-1, 0])}
+
+t_positions = {(0, 0)}
+for line in input_lines:
+    direction, amount = line.split()
+    amount = int(amount)
+    for _ in range(amount):
+        rope[0] += moves[direction]
+        for knot1, knot2 in zip(rope, rope[1:]):
+            if (move := check_far_away(knot1, knot2)).size > 0:
+                knot2 += limit_move(move)
+        t_positions.add((rope[-1][0], rope[-1][1]))
+
+print(f'{len(t_positions)=}')
+```
+
+To limit the movement, I crop it in each axis between 0 and 1, respecting the signs.
+
+
+```python
+def limit_move(move: np.ndarray) -> np.ndarray:
+signs = np.sign(move)
+return np.array([signs[0]*min(abs(move[0]), 1), signs[1]*min(abs(move[1]), 1)])
+```
+
+The answer is: `2478`.
+
+</details>
