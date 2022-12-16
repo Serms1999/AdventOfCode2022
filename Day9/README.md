@@ -278,3 +278,31 @@ So, there are **`13`** positions the tail visited at least once.
 Simulate your complete hypothetical series of motions. **How many positions does the tail of the rope visit at least once?**
 
 
+<details>
+    <summary>Solution</summary>
+
+Here, we have to check if the head is too far away from the tail. In this case, we calculate the distance among them but removing one move in the current direction (the tail is always behind the head).
+To check if the distance is big enough I use Chebyshev distance: $$ D_{\text{Chebyshev}} = \max\left\{ \lvert x_1 - y_1 \rvert, \lvert x_2 - y_2 \rvert \right\}$$
+
+```python
+tail, head = np.array([0, 0]), np.array([0, 0])
+moves = {'L': np.array([0, -1]), 'U': np.array([1, 0]),
+         'R': np.array([0, 1]), 'D': np.array([-1, 0])}
+t_positions = {(0, 0)}
+for line in input_lines:
+    direction, amount = line.split()
+    amount = int(amount)
+    for num in range(amount):
+        head += moves[direction]
+        if (move := check_far_away(head, tail)).size > 0:
+            tail += move - moves[direction]
+            t_positions.add((tail[0], tail[1]))
+
+print(f'{len(t_positions)=}')
+```
+
+The answer is: `5735`.
+
+</details>
+
+
