@@ -46,8 +46,8 @@ Each monkey has several attributes:
 - `Starting items` lists your **worry level** for each item the monkey is currently holding in the order they will be inspected.
 - `Operation` shows how your worry level changes as that monkey inspects an item. (An operation like `new = old * 5` means that your worry level after the monkey inspected the item is five times whatever your worry level was before inspection.)
 - `Test` shows how the monkey uses your worry level to decide where to throw an item next.
-	+ `If true` shows what happens with an item if the `Test` was true.
-	+ `If false` shows what happens with an item if the `Test` was false.
+    + `If true` shows what happens with an item if the `Test` was true.
+    + `If false` shows what happens with an item if the `Test` was false.
 
 
 After each monkey inspects an item but before it tests your worry level, your relief that the monkey's inspection didn't damage the item causes your worry level to be **divided by three** and rounded down to the nearest integer.
@@ -258,7 +258,7 @@ def parse_monkeys(input_lines: list) -> list:
     #          'op': [op, arg],                                   #
     #          'test': [div, next_monkey_true, next_monkey_false]}#
     ###############################################################
-	
+
     monkeys = []
     monkey_num = -1
     current_monkey = []
@@ -303,14 +303,14 @@ def calculate_worry(monkey: dict, item: int) -> int:
 monkeys = parse_monkeys(input_lines)
 monkey_inspections = np.zeros(len(monkeys), dtype=int)
 for _ in range(20):
-	for index, monkey in enumerate(monkeys):
-		while len(monkey['items']):
-			item = monkey['items'].pop(0)
-			worry_level = calculate_worry(monkey, item)
-			divisible = worry_level % monkey['test'][0] == 0
-			next_monkey = monkey['test'][2 - int(divisible)]
-			monkeys[next_monkey]['items'].append(worry_level)
-			monkey_inspections[index] += 1
+    for index, monkey in enumerate(monkeys):
+        while len(monkey['items']):
+            item = monkey['items'].pop(0)
+            worry_level = calculate_worry(monkey, item)
+            divisible = worry_level % monkey['test'][0] == 0
+            next_monkey = monkey['test'][2 - int(divisible)]
+            monkeys[next_monkey]['items'].append(worry_level)
+            monkey_inspections[index] += 1
 
 monkey_business = np.prod(sorted(monkey_inspections, reverse=True)[0:2])
 print(f'{monkey_business=}')
