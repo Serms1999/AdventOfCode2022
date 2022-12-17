@@ -47,18 +47,22 @@ def parse_monkeys(input_lines: list) -> list:
 
 def calculate_worry(monkey: dict, item: int) -> int:
     op, args = monkey['op'][0], [int(x) for x in monkey['op'][1:]]
-    return functions[op](args + [item]) // 3
+    return functions[op](args + [item])
 
 
 def main():
     input_lines = read_input_lines()
     monkeys = parse_monkeys(input_lines)
     monkey_inspections = np.zeros(len(monkeys), dtype=int)
-    for _ in range(20):
+
+    mods = np.prod([monkey['test'][0] for monkey in monkeys])
+
+    for _ in range(10_000):
         for index, monkey in enumerate(monkeys):
             while len(monkey['items']):
                 item = monkey['items'].pop(0)
                 worry_level = calculate_worry(monkey, item)
+                worry_level = worry_level % mods
                 divisible = worry_level % monkey['test'][0] == 0
                 next_monkey = monkey['test'][2 - int(divisible)]
                 monkeys[next_monkey]['items'].append(worry_level)
