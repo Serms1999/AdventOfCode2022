@@ -6,19 +6,23 @@ def add_node(a: (int, int), b: (int, int)) -> (int, int):
     return a[0] + b[0], a[1] + b[1]
 
 
-def parse_graph(graph_str: list) -> (np.ndarray, tuple, tuple):
+def parse_graph(graph_str: list) -> (np.ndarray, list, tuple):
     graph = []
-    src, dst = 0, 0
+    src, dst = set(), 0
     for row, line in enumerate(graph_str):
         aux_list = list(line)
         if 'S' in aux_list:
             idx = aux_list.index('S')
-            src = (row, idx)
+            src.add((row, idx))
             aux_list[idx] = 'a'
         if 'E' in aux_list:
             idx = aux_list.index('E')
             dst = (row, idx)
             aux_list[idx] = 'z'
+
+        a_indexes = np.where(np.array(aux_list) == 'a')[0]
+        for idx in a_indexes:
+            src.add((row, idx))
 
         graph.append([ord(v) - ord('a') for v in aux_list])
 
@@ -63,12 +67,19 @@ def dijkstra(graph: np.ndarray, src: tuple) -> (np.ndarray, dict):
     return dist, prev
 
 
+def inverse_graph(graph: np.ndarray) -> np.ndarray:
+    aux = np.full(np.shape(graph), 25)
+    return aux - graph
+
+
 def main():
     input_lines = read_input_lines()
-    graph, src, dst = parse_graph(input_lines)
-    dist, _ = dijkstra(graph, src)
-
-    print(f'{dist[dst[0]][dst[1]]=}')
+    graph, src_list, dst = parse_graph(input_lines)
+    inv_graph = inverse_graph(graph)
+    dist, _ = dijkstra(inv_graph, dst)
+    costs = list(map(lambda x: dist[x[0]][x[1]], src_list))
+    valid_costs = list(filter(lambda x: x > 0, costs))
+    print(f'{min(valid_costs)=}')
 
 
 if __name__ == '__main__':

@@ -29,7 +29,7 @@ puzzle is unlocked when you complete the first. Each puzzle grants **one star**.
 | 09  | :white_check_mark:      | :white_check_mark:      | [Day 9](Day9/)   | [Day 09](https://adventofcode.com/2022/day/9)  |
 | 10  | :white_check_mark:      | :white_check_mark:      | [Day 10](Day10/) | [Day 10](https://adventofcode.com/2022/day/10) |
 | 11  | :white_check_mark:      | :white_check_mark:      | [Day 11](Day11/) | [Day 11](https://adventofcode.com/2022/day/11) |
-| 12  | :white_check_mark:      | :ballot_box_with_check: | [Day 12](Day12/) | [Day 12](https://adventofcode.com/2022/day/12) |
+| 12  | :white_check_mark:      | :white_check_mark:      | [Day 12](Day12/) | [Day 12](https://adventofcode.com/2022/day/12) |
 | 13  | :ballot_box_with_check: | :ballot_box_with_check: |                  | [Day 13](https://adventofcode.com/2022/day/13) |
 | 14  | :ballot_box_with_check: | :ballot_box_with_check: |                  | [Day 14](https://adventofcode.com/2022/day/14) |
 | 15  | :ballot_box_with_check: | :ballot_box_with_check: |                  | [Day 15](https://adventofcode.com/2022/day/15) |

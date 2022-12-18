@@ -51,3 +51,62 @@ The answer is: `472`.
 </details>
 
 
+## --- Part Two ---
+
+As you walk up the hill, you suspect that the Elves will want to turn this into a hiking trail. The beginning isn't very scenic, though; perhaps you can find a better starting point.
+
+
+To maximize exercise while hiking, the trail should start as low as possible: elevation `a`. The goal is still the square marked `E`. However, the trail should still be direct, taking the fewest steps to reach its goal. So, you'll need to find the shortest path from **any square at elevation `a`** to the square marked `E`.
+
+
+Again consider the example from above:
+
+<pre><code><b>S</b>abqponm
+abcryxxl
+accsz<b>E</b>xk
+acctuvwj
+abdefghi
+</code></pre>
+
+Now, there are six choices for starting position (five marked `a`, plus the square marked `S` that counts as being at elevation `a`). If you start at the bottom-left square, you can reach the goal most quickly:
+
+
+
+```
+...v<<<<
+...vv<<^
+...v>E^^
+.>v>>>^^
+>^>>>>>^
+```
+
+This path reaches the goal in only **`29`** steps, the fewest possible.
+
+
+**What is the fewest steps required to move starting from any square with elevation `a` to the location that should get the best signal?**
+
+<details>
+    <summary>Solution</summary>
+
+The solution is to invert the graph, and use Dijkstra from the end to each source. To invert the graph I subtract 25 minus each value.
+
+```python
+def inverse_graph(graph: np.ndarray) -> np.ndarray:
+    aux = np.full(np.shape(graph), 25)
+    return aux - graph
+```
+
+Once I have the cost of each node, I search for the minimum value in these costs. There are negative values, which must be removed before searching for the minimum value.
+
+```python
+graph, src_list, dst = parse_graph(input_lines)
+inv_graph = inverse_graph(graph)
+dist, _ = dijkstra(inv_graph, dst)
+costs = list(map(lambda x: dist[x[0]][x[1]], src_list))
+valid_costs = list(filter(lambda x: x > 0, costs))
+print(f'{min(valid_costs)=}')
+```
+
+The answer is: `465`.
+
+</details>
