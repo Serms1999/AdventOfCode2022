@@ -127,3 +127,42 @@ What are the indices of the pairs that are already **in the right order**? (The 
 Determine which pairs of packets are already in the right order. **What is the sum of the indices of those pairs?**
 
 
+<details>
+    <summary>Solution</summary>
+
+First of all, it is necessary to parse the input. To do that, I use the json module, which helps me to parse every list. After that I make a comparative function between two elements. If the items are ordered the function return `-1`, if not `1` and if they are equals,
+it returns 0.
+
+```python
+def compare(item1, item2) -> int:
+    if type(item1) == type(item2) == int:
+        if item1 < item2:
+            return -1
+        elif item1 > item2:
+            return 1
+        return 0
+
+    # Both must be list
+    list1, list2 = as_list(item1), as_list(item2)
+    while list1 and list2:
+        elem1, elem2 = list1.pop(0), list2.pop(0)
+        if (result := compare(elem1, elem2)) != 0:
+            return result
+
+    if (result := len(list1) - len(list2)) == 0:
+        return 0
+    return result // abs(result)
+```
+
+The function `as_list(x)` returns `x` if `x` is already a list, or `[x]` in other case.
+```python
+def as_list(x) -> list:
+    if type(x) == list:
+        return x
+    return [x]
+```
+
+The answer is: `5684`.
+
+</details>
+
