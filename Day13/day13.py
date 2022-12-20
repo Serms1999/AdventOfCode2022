@@ -1,5 +1,7 @@
 from IO.IO_module import read_input_lines
+from functools import cmp_to_key
 import json
+from copy import deepcopy
 
 
 def as_list(x) -> list:
@@ -28,20 +30,20 @@ def compare(item1, item2) -> int:
     return result // abs(result)
 
 
+def compare_copies(item1, item2) -> int:
+    return compare(deepcopy(item1), deepcopy(item2))
+
+
 def main():
-    input_lines = read_input_lines()
+    input_lines = read_input_lines() + ['[[2]]', '[[6]]']
 
-    cmp_list = [[], [], '']
-    value = 0
-    for index, line in enumerate(input_lines + ['']):
-        position = index % 3
-        if not line:
-            if compare(cmp_list[0], cmp_list[1]) <= 0:
-                value += index // 3 + 1
-            continue
-        cmp_list[position] = json.loads(line)
+    signals = []
+    for index, line in enumerate(filter(lambda l: bool(l), input_lines)):
+        signals.append(json.loads(line))
 
-    print(f'{value=}')
+    signals_ordered = sorted(signals, key=cmp_to_key(compare_copies))
+    decoder_key = (signals_ordered.index([[2]]) + 1) * (signals_ordered.index([[6]]) + 1)
+    print(f'{decoder_key=}')
 
 
 if __name__ == '__main__':
