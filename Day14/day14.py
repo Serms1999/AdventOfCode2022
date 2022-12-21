@@ -49,7 +49,9 @@ def get_possible_points(point: (int, int)) -> list:
             (point[0] + 1, point[1] + 1)]
 
 
-def blocked(cave: dict, point: (int, int)) -> bool:
+def blocked(cave: dict, point: (int, int), deepest: int) -> bool:
+    if point[0] == deepest:
+        return True
     return point[0] in cave and point[1] in cave[point[0]]
 
 
@@ -58,19 +60,17 @@ def main():
     cave = parse_cave(input_lines)
 
     sand_units = 0
-    sand_falling = False
-    while not sand_falling:
+    deepest = max(cave) + 2
+    while True:
+        if 0 in cave and 500 in cave[0]:
+            break
+
         point = (0, 500)
         blocked_point = False
         while not blocked_point:
-            if point[0] + 1 > max(cave.keys()):
-                # Sand falls over
-                sand_falling = True
-                break
-
             options = [False, False, False]
             for index, possible_point in enumerate(get_possible_points(point)):
-                if not blocked(cave, possible_point):
+                if not blocked(cave, possible_point, deepest):
                     point = possible_point
                     options[index] = True
                     break

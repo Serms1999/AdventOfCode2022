@@ -248,3 +248,97 @@ print(f'{sand_units=}')
 The answer is: `618`.
 
 </details>
+
+
+## --- Part Two ---
+
+You realize you misread the scan. There isn't an endless void at the bottom of the scan - there's floor, and you're standing on it!
+
+
+You don't have time to scan the floor, so assume the floor is an infinite horizontal line with a `y` coordinate equal to **two plus the highest `y` coordinate** of any point in your scan.
+
+
+In the example above, the highest `y` coordinate of any point is `9`, and so the floor is at `y=11`. (This is as if your scan contained one extra rock path like `-infinity,11 -> infinity,11`.) With the added floor, the example above now looks like this:
+
+
+
+```
+        ...........+........
+        ....................
+        ....................
+        ....................
+        .........#...##.....
+        .........#...#......
+        .......###...#......
+        .............#......
+        .............#......
+        .....#########......
+        ....................
+<-- etc #################### etc -->
+```
+
+To find somewhere safe to stand, you'll need to simulate falling sand until a unit of sand comes to rest at `500,0`, blocking the source entirely and stopping the flow of sand into the cave. In the example above, the situation finally looks like this after **`93`** units of sand come to rest:
+
+
+
+```
+............o............
+...........ooo...........
+..........ooooo..........
+.........ooooooo.........
+........oo#ooo##o........
+.......ooo#ooo#ooo.......
+......oo###ooo#oooo......
+.....oooo.oooo#ooooo.....
+....oooooooooo#oooooo....
+...ooo#########ooooooo...
+..ooooo.......ooooooooo..
+#########################
+```
+
+Using your scan, simulate the falling sand until the source of the sand becomes blocked. **How many units of sand come to rest?**
+
+<details>
+    <summary>Solution</summary>
+
+With the previous solution, I only have to do a few changes. Instead of checking if one unit of sand is falling over, I check if the initial point is already taken. This check is now done outside the inner loop.
+
+```python
+cave = parse_cave(input_lines)
+
+sand_units = 0
+deepest = max(cave) + 2
+while True:
+    if 0 in cave and 500 in cave[0]:
+        break
+
+    point = (0, 500)
+    blocked_point = False
+    while not blocked_point:
+        options = [False, False, False]
+        for index, possible_point in enumerate(get_possible_points(point)):
+            if not blocked(cave, possible_point, deepest):
+                point = possible_point
+                options[index] = True
+                break
+
+        if not any(options):
+            blocked_point = True
+            add_point(cave, point[1], point[0])
+            sand_units += 1
+
+print(f'{sand_units=}')
+```
+
+In addition, to check the new floor I change the `blocked` function.
+
+```python
+def blocked(cave: dict, point: (int, int), deepest: int) -> bool:
+    if point[0] == deepest:
+        return True
+    return point[0] in cave and point[1] in cave[point[0]]
+```
+
+The answer is: `26358`.
+
+</details>
