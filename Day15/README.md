@@ -68,9 +68,7 @@ Drawing sensors as `S` and beacons as `B`, the above arrangement of sensors and 
 This isn't necessarily a comprehensive map of all beacons in the area, though. Because each sensor only identifies its closest beacon, if a sensor detects a beacon, you know there are no other beacons that close or closer to that sensor. There could still be beacons that just happen to not be the closest beacon to any sensor. Consider the sensor at `8,7`:
 
 
-
-```
-               1    1    2    2
+<pre><code>               1    1    2    2
      0    5    0    5    0    5
 -2 ..........#.................
 -1 .........###................
@@ -81,10 +79,10 @@ This isn't necessarily a comprehensive map of all beacons in the area, though. B
  4 ....#############...........
  5 ...###############..........
  6 ..#################.........
- 7 .#########**S**#######S#........
+ 7 .#########<b>S</b>#######S#........
  8 ..#################.........
  9 ...###############..........
-10 ....**B**############...........
+10 ....<b>B</b>############...........
 11 ..S..###########............
 12 ......#########.............
 13 .......#######..............
@@ -97,7 +95,7 @@ This isn't necessarily a comprehensive map of all beacons in the area, though. B
 20 ............S......S........
 21 ............................
 22 .......................B....
-```
+</code></pre>
 
 This sensor's closest beacon is at `2,10`, and so you know there are no beacons that close or closer (in any positions marked `#`).
 
@@ -108,18 +106,81 @@ None of the detected beacons seem to be producing the distress signal, so you'll
 So, suppose you have an arrangement of beacons and sensors like in the example above and, just in the row where `y=10`, you'd like to count the number of positions a beacon cannot possibly exist. The coverage from all sensors near that row looks like this:
 
 
-
-```
-                 1    1    2    2
+<pre><code>                 1    1    2    2
        0    5    0    5    0    5
  9 ...#########################...
-**10 ..####B######################..**
+<b>10 ..####B######################..</b>
 11 .###S#############.###########.
-```
+</code></pre>
 
 In this example, in the row where `y=10`, there are **`26`** positions where a beacon cannot be present.
 
 
 Consult the report from the sensors you just deployed. **In the row where `y=2000000`, how many positions cannot contain a beacon?**
+
+
+<details>
+    <summary>Solution</summary>
+
+This is a tricky problem. My first approach was to save all the impossible points and finally check for the asked row, but the program ran out of memory.
+
+In my second try, I realized that I didn't have to save all the points, only the points in the asked row.
+
+First of all, I parse the input as a list of elements `sensor, beacon, distance`.
+
+```python
+def manhattan_distance(p1: (int, int), p2: (int, int)) -> int:
+    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+
+
+def parse_sensors(area: list) -> list:
+    sensors = []
+    for line in area:
+        aux_dict = dict()
+        nums = re.findall(r'-?\d+', line)
+        aux_dict['sensor'] = int(nums[0]), int(nums[1])
+        aux_dict['beacon'] = int(nums[2]), int(nums[3])
+        aux_dict['distance'] = manhattan_distance(aux_dict['sensor'], aux_dict['beacon'])
+        sensors.append(aux_dict)
+
+    return sensors
+```
+
+Once I have already parsed the input, I loop through all the sensors checking if that sensor can modify the asked row.
+If it is not the case, I skip the sensor. On the other hand, if it does modify the row, I update the impossible points in the row with these new ones.
+Lastly, I remove the possible sensors or beacons in the row.
+
+
+```python
+sensors = parse_sensors(input_lines)
+row = 2_000_000
+
+impossible_points = set()
+for sensor in sensors:
+    sensor_point, beacon_point, distance = sensor.values()
+    if (offset := abs(row - sensor_point[1])) <= distance:
+        signal_range = range(sensor_point[0] - distance, sensor_point[0] + distance + 1)
+        if offset == 0:
+            impossible_points.update(signal_range)
+        else:
+            if sensor_point[1] + offset == row:
+                impossible_points.update(signal_range[offset:-offset])
+            elif sensor_point[1] - offset == row:
+                impossible_points.update(signal_range[offset:-offset])
+
+        try:
+            if sensor_point[1] == row:
+                impossible_points.remove(sensor_point[0])
+            if beacon_point[1] == row:
+                impossible_points.remove(beacon_point[0])
+        except KeyError:
+            pass
+
+print(f'{len(impossible_points)=}')
+```
+
+The answer is: `4876693`.
+
+</details>
 
 
