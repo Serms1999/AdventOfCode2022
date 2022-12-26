@@ -62,10 +62,10 @@ def get_impossible_points(sensors: list, minimum: int, maximum: int) -> dict:
     return impossible_points
 
 
-def remove_range(ranges: list, value: range) -> None:
+def remove_value(ranges: list, value: int) -> None:
     index = -1
     for idx, r in enumerate(ranges):
-        if min(value) in r:
+        if value in r:
             index = idx
             break
 
@@ -74,10 +74,30 @@ def remove_range(ranges: list, value: range) -> None:
 
     r = ranges.pop(index)
     a, b = min(r), max(r)
-    if low_range := range(a, min(value)):
+    if low_range := range(a, value):
         ranges.append(low_range)
-    if high_range := range(max(value) + 1, b + 1):
+    if high_range := range(value + 1, b + 1):
         ranges.append(high_range)
+
+
+def remove_range(ranges: list, item: range) -> None:
+    try:
+        remove_value(ranges, min(item))
+        remove_value(ranges, max(item))
+    except ValueError:
+        return
+
+    def check_between(r: range) -> bool:
+        return min(item) >= min(r) or max(item) <= max(r)
+
+    ranges[:] = [r for r in ranges if check_between(r)]
+
+
+def filter_range(r: range, minimum: int, maximum: int) -> range:
+    filtered_list = list(filter(lambda s: minimum <= s <= maximum, r))
+    if filtered_list:
+        return range(min(filtered_list), max(filtered_list) + 1)
+    return range(0, 0)
 
 
 def possible_points(sensors: list, all_possible: dict, range_possible: range) -> None:
@@ -87,14 +107,14 @@ def possible_points(sensors: list, all_possible: dict, range_possible: range) ->
 
         signal_range = range(sensor_point[0] - distance, sensor_point[0] + distance + 1)
         if minimum <= sensor_point[1] <= maximum:
-            remove_range(all_possible[sensor_point[1]], filter(lambda s: minimum <= s <= maximum, signal_range))
+            remove_range(all_possible[sensor_point[1]], filter_range(signal_range, minimum, maximum))
 
         for x in range(1, distance + 1):
             if minimum <= sensor_point[1] + x <= maximum:
-                remove_range(all_possible[sensor_point[1] + x], filter(lambda s: minimum <= s <= maximum, signal_range[x:-x]))
+                remove_range(all_possible[sensor_point[1] + x], filter_range(signal_range[x:-x], minimum, maximum))
 
             if minimum <= sensor_point[1] - x <= maximum:
-                remove_range(all_possible[sensor_point[1] - x], filter(lambda s: minimum <= s <= maximum, signal_range[x:-x]))
+                remove_range(all_possible[sensor_point[1] - x], filter_range(signal_range[x:-x], minimum, maximum))
 
 
 def print_sensors(impossible_points, all_possible):
