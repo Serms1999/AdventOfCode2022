@@ -184,3 +184,57 @@ The answer is: `4876693`.
 </details>
 
 
+
+## --- Part Two ---
+
+Your handheld device indicates that the distress signal is coming from a beacon nearby. The distress beacon is not detected by any sensor, but the distress beacon must have `x` and `y` coordinates each no lower than `0` and no larger than `4000000`.
+
+
+To isolate the distress beacon's signal, you need to determine its **tuning frequency**, which can be found by multiplying its `x` coordinate by `4000000` and then adding its `y` coordinate.
+
+
+In the example above, the search space is smaller: instead, the `x` and `y` coordinates can each be at most `20`. With this reduced search area, there is only a single position that could have a beacon: `x=14, y=11`. The tuning frequency for this distress beacon is **`56000011`**.
+
+
+Find the only possible position for the distress beacon. **What is its tuning frequency?**
+
+<details>
+    <summary>Solution</summary>
+
+My approach is to check the points of intersection between the lines which compose the diamonds of the figure that represent the Manhattan distance (I use the lines which are a unit apart from the diamond).
+I only use integer solutions.
+
+```python
+sensors = parse_sensors(input_lines)
+minimum, maximum = 0, 4_000_000
+possible_points = []
+for sensor in sensors:
+    sensors_copy = deepcopy(sensors)
+    sensors_copy.remove(sensor)
+    for other in sensors_copy:
+        lines1 = sensor['lines']
+        lines2 = other['lines']
+        for line1 in lines1.values():
+            for line2 in lines2.values():
+                if point := point_of_intersection(line1, line2):
+                    possible_points.append(point)
+
+possible_points = list(filter(lambda p: check_in_range(p, minimum, maximum), possible_points))
+```
+
+Lastly, I check the only point which is far enough from every sensor and I compute the tuning frequency.
+```python
+for point in possible_points:
+    if check_distance(sensors, point):
+        break
+
+tuning_frequency = 4_000_000 * point[0] + point[1]
+exec_time = (time_ns() - start) / 1_000_000
+print(f'{point[0]=}, {point[1]=}, {tuning_frequency=}, {exec_time=}ms')
+```
+
+This solution seems to be quite slow, but because I use the points of intersection the execution time is low. My solution takes around 15ms.
+
+The answer is: `11645454855041`.
+
+</details>

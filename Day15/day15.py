@@ -1,4 +1,6 @@
 from IO.IO_module import read_input_lines
+from copy import deepcopy
+from time import time_ns
 import re
 
 
@@ -14,53 +16,67 @@ def parse_sensors(area: list) -> list:
         aux_dict['sensor'] = int(nums[0]), int(nums[1])
         aux_dict['beacon'] = int(nums[2]), int(nums[3])
         aux_dict['distance'] = manhattan_distance(aux_dict['sensor'], aux_dict['beacon'])
+        aux_dict['lines'] = dict()
+        aux_dict['lines']['tr'] = -1, sum(aux_dict['sensor']) + aux_dict['distance'] + 1
+        aux_dict['lines']['tl'] = 1, aux_dict['sensor'][1] - aux_dict['sensor'][0] + aux_dict['distance'] + 1
+        aux_dict['lines']['br'] = 1, aux_dict['sensor'][1] - aux_dict['sensor'][0] - aux_dict['distance'] - 1
+        aux_dict['lines']['bl'] = -1, sum(aux_dict['sensor']) - aux_dict['distance'] - 1
         sensors.append(aux_dict)
 
     return sensors
 
 
-def print_sensors(impossible_points, all_possible):
-    for y in all_possible:
-        print(f'{y}\t', end='')
-        if y not in impossible_points:
-            print('.'*(all_possible[-1] + 1))
-        elif isinstance(impossible_points[y], range):
-            print('#'*(all_possible[-1] + 1))
-        else:
-            for x in all_possible:
-                if x in impossible_points[y]:
-                    print('#', end='')
-                else:
-                    print('.', end='')
-            print()
+def point_of_intersection(line1: (int, int), line2: (int, int)) -> (int, int):
+    if line1[0] == line2[0]:
+        return None
+    x = (line1[1] - line2[1]) / 2
+    y = (line1[1] + line2[1]) / 2
+    if not x.is_integer() or not y.is_integer():
+        return None
+    if line1[0] == -1:
+        return int(x), int(y)
+    return int(-x), int(y)
+
+
+def check_in_range(point: (int, int), minimum: int , maximum: int) -> bool:
+    return minimum <= point[0] <= maximum and minimum <= point[1] <= maximum
+
+
+def check_distance(sensors: list, point: (int, int)) -> bool:
+    for sensor in sensors:
+        if manhattan_distance(sensor['sensor'], point) <= sensor['distance']:
+            return False
+
+    return True
 
 
 def main():
-    input_lines = read_input_lines(file_name='test_input')
+    input_lines = read_input_lines()
+    start = time_ns()
+
     sensors = parse_sensors(input_lines)
     minimum, maximum = 0, 4_000_000
+    possible_points = []
+    for sensor in sensors:
+        sensors_copy = deepcopy(sensors)
+        sensors_copy.remove(sensor)
+        for other in sensors_copy:
+            lines1 = sensor['lines']
+            lines2 = other['lines']
+            for line1 in lines1.values():
+                for line2 in lines2.values():
+                    if point := point_of_intersection(line1, line2):
+                        possible_points.append(point)
 
-    for row in range(maximum):
-        impossible_points = set()
-        for sensor in sensors:
-            sensor_point, beacon_point, distance = sensor.values()
-            if (offset := abs(row - sensor_point[1])) <= distance:
-                signal_range = range(sensor_point[0] - distance, sensor_point[0] + distance + 1)
-                if offset == 0:
-                    impossible_points.update(signal_range)
-                else:
-                    if sensor_point[1] + offset == row:
-                        impossible_points.update(signal_range[offset:-offset])
-                    elif sensor_point[1] - offset == row:
-                        impossible_points.update(signal_range[offset:-offset])
+    possible_points = list(filter(lambda p: check_in_range(p, minimum, maximum), possible_points))
 
-        aux_list = list(filter(lambda x: minimum <= x <= maximum, impossible_points))
-        if len(aux_list) < maximum - minimum + 1:
+    for point in possible_points:
+        if check_distance(sensors, point):
             break
 
-    x_coord = (set(range(minimum, maximum + 1)) - impossible_points).pop()
-    tuning_frequency = 4_000_000 * x_coord + row
-    print(f'{x_coord=}, {row=}, {tuning_frequency=}')
+    tuning_frequency = 4_000_000 * point[0] + point[1]
+    exec_time = (time_ns() - start) / 1_000_000
+    print(f'{point[0]=}, {point[1]=}, {tuning_frequency=}, {exec_time=}ms')
 
 
 if __name__ == '__main__':
