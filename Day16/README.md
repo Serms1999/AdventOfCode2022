@@ -159,3 +159,32 @@ This approach lets you release the most pressure possible in 30 minutes with thi
 Work out the steps to release the most pressure in 30 minutes. **What is the most pressure you can release?**
 
 
+<details>
+    <summary>Solution</summary>
+
+In this problem, I check all possible options recursively and pick the maximum. I also have to cache the function due to optimization purposes.
+
+```python
+@cache
+def resolve_situation(cur_valve: str, opened: tuple, remaining_time: int) -> int:
+    if not remaining_time:
+        return 0
+
+    tunnels = valves[cur_valve]['tunnels']
+    rate = valves[cur_valve]['rate']
+    max_flow = max([resolve_situation(valve, opened, remaining_time-1) for valve in tunnels])
+
+    if rate and cur_valve not in opened:
+        new_opened = set(opened)
+        new_opened.add(cur_valve)
+        max_flow = max(
+            max_flow,
+            (rate*(remaining_time-1)) + resolve_situation(cur_valve, tuple(new_opened), remaining_time-1)
+        )
+
+    return max_flow
+```
+
+The answer is: `1871`.
+
+</details>
