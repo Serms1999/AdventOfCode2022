@@ -276,4 +276,37 @@ With the elephant helping, after 26 minutes, the best you could do would release
 
 **With you and an elephant working together for 26 minutes, what is the most pressure you could release?**
 
+<details>
+    <summary>Solution</summary>
+
+This situation is already solved with the previous solution. I only have to check again the options to make the elephant open the valves in the desired order in the appropriated situation.
+
+I use a flag to control that the elephant starts on second place. 
+
+```python
+@cache
+def resolve_situation(cur_valve: str, opened: tuple, remaining_time: int, elephant: bool) -> int:
+    if not remaining_time:
+        if elephant:
+            return resolve_situation('AA', opened, 26, False)
+        return 0
+
+    tunnels = valves[cur_valve]['tunnels']
+    rate = valves[cur_valve]['rate']
+    max_flow = max([resolve_situation(valve, opened, remaining_time - 1, elephant) for valve in tunnels])
+
+    if rate and cur_valve not in opened:
+        new_opened = set(opened)
+        new_opened.add(cur_valve)
+        max_flow = max(
+            max_flow,
+            (rate*(remaining_time-1)) + resolve_situation(cur_valve, tuple(new_opened), remaining_time - 1, elephant)
+        )
+
+    return max_flow
+```
+
+The answer is: `2416`.
+
+</details>
 
