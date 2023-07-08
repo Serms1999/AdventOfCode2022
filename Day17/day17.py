@@ -42,41 +42,56 @@ def check_pos(pos: (int, int), checks: list, column_height: dict) -> int:
     return 0
 
 
-def move_rock(cur_rock: str, pos: (int, int), move: str, column_height: dict) -> int:
+def move_rock(cur_rock: str, pos: (int, int), move: str, column_height: dict) -> (int, int):
     checks = rock_checks(cur_rock)
+    """
     if move == '>':
-        ret = check_pos(sum_tuples(pos, (1, 0)), checks, column_height)
+        new_pos = sum_tuples(pos, (1, 0))
+        ret = check_pos(new_pos, checks, column_height)
         if ret == 0:
-            new_checks = [sum_tuples(pos, check) for check in checks]
+            return new_pos
     elif move == '<':
-        ret = check_pos(sum_tuples(pos, (-1, 0)), checks, column_height)
+        new_pos = sum_tuples(pos, (-1, 0))
+        ret = check_pos(new_pos, checks, column_height)
         if ret == 0:
-            print()
+            return new_pos
     else:
-        ret = check_pos(sum_tuples(pos, (0, -1)), checks, column_height)
+        new_pos = sum_tuples(pos, (0, -1))
+        ret = check_pos(new_pos, checks, column_height)
         if ret == 0:
-            print()
-        elif ret == 2:
-            print()
+            return new_pos
+    """
+    moves = {'>': (1, 0), '<': (-1, 0), 'down': (0, -1)}
+    new_pos = sum_tuples(pos, moves[move])
+    ret = check_pos(new_pos, checks, column_height)
+    if ret == 0:
+        return new_pos
+    elif ret == 2:
+        column_height
+    return pos
 
 
 def main():
     jets = read_input_lines(file_name='test_input')[0]
     column_height = {i: 0 for i in range(7)}
     jet_index = 0
+    prev_rock = '■'
 
     for index in range(2022):
-        cur_rock = rock_patterns[index]
+        cur_rock = new_rock(prev_rock)
         pos = (2, 3)
         while True:
-
-            move_rock(cur_rock, pos, jets[jet_index], column_height)
+            pos = move_rock(cur_rock, pos, jets[jet_index], column_height)
             jet_index = (jet_index + 1) % len(jets)
 
-            ret = move_rock(cur_rock, pos, 'down', column_height)
-
-            if ret == 2:
+            new_pos = move_rock(cur_rock, pos, 'down', column_height)
+            if new_pos == pos:
                 break
+            else:
+                pos = new_pos
+            prev_rock = cur_rock
+
+    print(column_height)
 
 
 if __name__ == '__main__':
